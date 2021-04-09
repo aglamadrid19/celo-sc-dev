@@ -27,7 +27,7 @@ async function initContract(){
     );
 
     getName(instance)
-    setName(instance, "hello world!")
+    // setName(instance, "Hello Alvaro!")
 }
 
 // Read the 'name' stored in the HelloWorld.sol contract
@@ -43,12 +43,13 @@ async function setName(instance, newName){
     // Add your account to ContractKit to sign transactions
     // This account must have a CELO balance to pay tx fees, get some https://celo.org/build/faucet
     kit.connection.addAccount(account.privateKey)
-    
+
+    gasEstimate = await kit.web3.eth.getGasPrice()
     // Encode the transaction to HelloWorld.sol according to the ABI
     let txObject = await instance.methods.setName(newName)
     
     // Send the transaction
-    let tx = await kit.sendTransactionObject(txObject, { from: account.address })
+    let tx = await kit.sendTransactionObject(txObject, { from: account.address, gasPrice:gasEstimate})
 
     let receipt = await tx.waitReceipt()
     console.log(receipt)
